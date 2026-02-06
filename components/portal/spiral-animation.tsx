@@ -9,6 +9,8 @@ const SPIRAL_ROTATIONS = 3;
 const PARTICLE_SIZE = 10; // pixels
 const DURATION = 3; // seconds
 const STAGGER_DELAY = 0.015; // 150ms between particles
+const FADE_START_TIME = 2.5; // seconds - when background fade begins
+const FADE_DURATION = 1.0; // seconds - fade transition duration
 
 interface SpiralPoint {
   x: number;
@@ -41,6 +43,7 @@ function calculateSpiralPoint(index: number, total: number): SpiralPoint {
 export function SpiralAnimation() {
   const [isComplete, setIsComplete] = useState(false);
   const [shouldAnimate, setShouldAnimate] = useState(true);
+  const [shouldUnmount, setShouldUnmount] = useState(false);
 
   // Check for reduced motion preference
   useEffect(() => {
@@ -60,13 +63,27 @@ export function SpiralAnimation() {
     );
   }, []);
 
-  // Don't render if animation is complete or user prefers reduced motion
-  if (isComplete || !shouldAnimate) {
+  // Don't render if fade is complete or user prefers reduced motion
+  if (shouldUnmount || !shouldAnimate) {
     return null;
   }
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-none overflow-hidden">
+      {/* Black background overlay - fades to reveal content */}
+      <motion.div
+        className="absolute inset-0 bg-black"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 0 }}
+        transition={{
+          duration: FADE_DURATION,
+          delay: FADE_START_TIME,
+          ease: 'linear'
+        }}
+        onAnimationComplete={() => setShouldUnmount(true)}
+        style={{ zIndex: 0 }}
+      />
+
       {/* CRT Scanlines Overlay */}
       <div 
         className="absolute inset-0 pointer-events-none"
