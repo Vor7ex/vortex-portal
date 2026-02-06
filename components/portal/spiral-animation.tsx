@@ -4,13 +4,12 @@ import { motion } from 'framer-motion';
 import { useState, useEffect, useMemo } from 'react';
 
 // Animation configuration
-const PARTICLE_COUNT = 50;
+const PARTICLE_COUNT = 90;
 const SPIRAL_ROTATIONS = 3;
-const PARTICLE_SIZE = 10; // pixels
+const PARTICLE_SIZE = 6; // pixels
 const DURATION = 3; // seconds
-const STAGGER_DELAY = 0.015; // 150ms between particles
-const FADE_START_TIME = 2.5; // seconds - when background fade begins
-const FADE_DURATION = 1.0; // seconds - fade transition duration
+const FADE_START_TIME = 1; // seconds - when background fade begins
+const FADE_DURATION = 2; // seconds - fade transition duration
 
 interface SpiralPoint {
   x: number;
@@ -35,7 +34,7 @@ function calculateSpiralPoint(index: number, total: number): SpiralPoint {
   return {
     x: radius * Math.cos(theta),
     y: radius * Math.sin(theta),
-    delay: index * STAGGER_DELAY,
+    delay: index,
     index
   };
 }
@@ -122,10 +121,11 @@ export function SpiralAnimation() {
               duration: DURATION,
               opacity: { 
                 duration: DURATION,
-                times: [0, 0.1, 0.9, 1],
+                times: [0, 0.3, 0.7, 1],
               },
               scale: { 
-                times: [0, 0.1, 0.9, 1],
+                duration: DURATION,
+                times: [0, 0.3, 0.7, 1],
                 ease: [0.34, 1.56, 0.64, 1] // Cubic bezier for bounce effect
               }
             }}
